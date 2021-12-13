@@ -4,8 +4,9 @@ import { BrowserRouter as Router, Switch, Route, Link , useParams , useRouteMatc
 import Movies from './Components/Movies';
 import Home from './Components/Home';
 import Admin from './Components/Admin';
-import Catagories from "./Components/Catagories";
 import OneMovie from "./Components/OneMovie";
+import Genres from './Components/Genres'
+import OneGenre from "./Components/OneGenre";
 
 export default function app() {
 
@@ -27,20 +28,22 @@ export default function app() {
                   <Link to='/'>Home</Link>
                 </li>
                 <li className="list-group-item">
-                  <Link to='movies'>Movie</Link>
+                  <Link to='/movies'>Movie</Link>
                 </li>
 
                 <li className="list-group-item">
-                  <Link to='by-catagory'>Catagories</Link>
+                  <Link to='/genres'>Genres</Link>
                 </li>
 
                 <li className="list-group-item">
-                  <Link to='admin'>Manage Catalogue</Link>
+                  <Link to='/admin'>Manage Catalogue</Link>
                 </li>
               </ul>
             </nav>
           </div>
           <div className="col-md-10">
+
+
             <Switch>
               <Route path="/movies/:id" component= {OneMovie} />
 
@@ -48,17 +51,11 @@ export default function app() {
                 <Movies /> 
               </Route>
 
-              <Route exact path="/by-catagory">
-                <CategoryPage />
+              <Route path="/genre/:id" component= {OneGenre} />
+
+              <Route exact path="/genres">
+                <Genres />
               </Route>
-
-              <Route exact path="/by-catagory/drama"
-                render= {(props) => <Catagories {... props} title = {`Drama`}/> } 
-              />
-
-              <Route exact path="/by-catagory/comedy"
-                render= {(props) => <Catagories {... props} title = {`Comedy`}/> } 
-              />
 
               <Route path="/admin"> 
                 <Admin /> 
@@ -75,20 +72,5 @@ export default function app() {
       </div>
     </Router>
   );
-
-
-  function CategoryPage() {
-    let { path , url } = useRouteMatch() ;
-    
-    return (
-      <div>
-        <h2>Catagories</h2>
-        <ul>
-          <li> <Link to={`${path}/drama`}>Drama</Link> </li>
-          <li> <Link to={`${path}/comedy`}>Comedy</Link> </li>
-        </ul>
-      </div>
-    );
-  }
   
 }

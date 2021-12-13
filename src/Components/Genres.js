@@ -1,16 +1,17 @@
-import React, { Component, Fragment } from "react";
-import { Link } from 'react-router-dom';
+import React, { Component } from 'react'
+import { Fragment } from 'react/cjs/react.production.min';
+import { Link } from 'react-router-dom'
 
-export default class Movies extends Component {
+export default class Genre extends Component {
 
     state = {
-        movies: [],
+        genres: [],
         isLoaded: false,
         error: null
-    };
+    }
 
     componentDidMount() {
-        fetch("http://localhost:4000/v1/movies")
+        fetch("http://localhost:4000/v1/genres")
             // .then(res => res.json())
             .then((res) => {
                 console.log("Status code is " + res.status);
@@ -23,7 +24,7 @@ export default class Movies extends Component {
             })
             .then((json) => {
                 this.setState({
-                    movies: json.movies,
+                    genres: json.genres,
                     isLoaded: true,
                 },
                     (error) => {
@@ -38,27 +39,34 @@ export default class Movies extends Component {
     }
 
     render() {
-        const { movies, isLoaded, error } = this.state;
+        const { genres, isLoaded, error } = this.state;
         if (error) {
             return <div> Error: {error.message}</div>
         }
         else if (!isLoaded) {
             return (<p> Loading... </p>);
+
         } else {
 
             return (
                 <Fragment>
-                    <h2> Choose a movies</h2>
+
+                    <h2>
+                        Genres
+                    </h2>
+
                     <div className='list-group'>
-                        {movies.map((m) => (
-
-                            <Link to={`movies/${m.id}`} key={m.id} className='list-group-item list-group-item-action' >{m.title}</Link>
-
+                        {genres.map((m) => (
+                            <Link to={{
+                                pathname: `/genre/${m.id}`,
+                                genreName: m.genre_name
+                            }} className='list-group-item list-group-item-action' key={m} >{m.genre_name}</Link>
                         ))}
                     </div>
+
+
                 </Fragment>
             );
         }
     }
-
 }
