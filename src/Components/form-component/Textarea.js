@@ -7,13 +7,15 @@ const Textarea = (props) => {
             </label>
 
             <textarea
-                className='form-control'
+                className= {`form-control ${props.className}`}
                 id={props.name}
                 name={props.name}
                 rows={props.rows}
                 onChange={props.handleChange}
                 value={props.value}
             />
+
+            <div className={props.errorDiv}>{props.errorMessage}</div>
 
         </div>
     );
