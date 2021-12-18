@@ -4,6 +4,9 @@ import Input from './form-component/Input';
 import Textarea from './form-component/Textarea';
 import Select from './form-component/Select';
 import Alert from './ui-components/Alert';
+import { Link } from 'react-router-dom/cjs/react-router-dom.min';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 export default class EditMovie extends Component {
 
@@ -31,9 +34,9 @@ export default class EditMovie extends Component {
 
             ],
             errors: [],
-            alert : {
-                type:"d-none",
-                message : ""
+            alert: {
+                type: "d-none",
+                message: ""
             }
         }
 
@@ -73,19 +76,16 @@ export default class EditMovie extends Component {
         fetch('http://localhost:4000/v1/admin/editmovie', requestOptions)
             .then(res => res.json())
             .then(data => {
-                if (data.error){
+                if (data.error) {
                     this.setState({
                         alert: {
                             type: 'alert-danger',
-                            message: data.error.message 
+                            message: data.error.message
                         }
                     })
-                }else{
-                    this.setState({
-                        alert: {
-                            type: 'alert-success',
-                            message: "Changes saved!"
-                        }
+                } else {
+                    this.props.history.push({
+                        pathname: "/admin"
                     })
                 }
             })
@@ -121,33 +121,77 @@ export default class EditMovie extends Component {
                     return res.json();
                 })
                 .then((json) => {
-                    const releaseDate = new Date(json.movie.release_date)
+                    if(json.movie){
 
-                    this.setState({
-                        movie: {
-                            id: id,
-                            title: json.movie.title,
-                            release_date: releaseDate.toISOString().split("T")[0],
-                            runtime: json.movie.runtime,
-                            mpaa_rating: json.movie.mpaa_rating,
-                            rating: json.movie.rating,
-                            description: json.movie.description
+                        const releaseDate = new Date(json.movie.release_date)
+    
+                        this.setState({
+                            movie: {
+                                id: id,
+                                title: json.movie.title,
+                                release_date: releaseDate.toISOString().split("T")[0],
+                                runtime: json.movie.runtime,
+                                mpaa_rating: json.movie.mpaa_rating,
+                                rating: json.movie.rating,
+                                description: json.movie.description
+                            },
+                            isLoaded: true
+    
                         },
-                        isLoaded: true
-
-                    },
-                        (error) => {
-                            this.setState({
-                                isLoaded: true,
-                                error
-                            })
-                        }
-
-                    )
+                            (error) => {
+                                this.setState({
+                                    isLoaded: true,
+                                    error
+                                })
+                            }
+    
+                        )
+                    }else {
+                        let err = Error ;
+                        err.message = "Movie not found"
+                        this.setState({
+                            isLoaded: true,
+                            error : err  
+                        })
+                    }
                 })
         } else {
             this.setState({ isLoaded: true })
         }
+    }
+
+    confirmDelete = (e) => {
+        // console.log("Would delte movie id", this.state.movie.id)
+
+        confirmAlert({
+            title: 'Confirm to delete Movie?',
+            message: 'Are you sure?',
+            buttons: [
+                {
+                    label: 'Yes',
+                    onClick: () => {
+                        fetch("http://localhost:4000/v1/admin/deletemovie/" + this.state.movie.id , {method: "GET"})
+                        .then(response => response.json())
+                        .then(data =>{
+                            if(data.error){
+                                this.setState({
+                                    alert: {type : "alert-danger" , message: data.error.message}
+                                })
+                            }
+                            else{
+                                this.props.history.push({
+                                    pathname: "/admin"
+                                })
+                            }
+                        })
+                    }
+                },
+                {
+                    label: 'No',
+                    onClick: () => {}
+                }
+            ]
+        });
     }
 
     render() {
@@ -163,10 +207,10 @@ export default class EditMovie extends Component {
             return (
                 <Fragment>
                     <h2>Add/Edit Movie</h2><br />
-                        <Alert
-                            alertType = {this.state.alert.type}
-                            alertMessage = {this.state.alert.message}
-                        />
+                    <Alert
+                        alertType={this.state.alert.type}
+                        alertMessage={this.state.alert.message}
+                    />
                     <hr />
                     <form onSubmit={this.handleSubmit}>
                         <input type='hidden' name="id" id="id" value={movie.id} onChange={this.handleChange} />
@@ -218,9 +262,9 @@ export default class EditMovie extends Component {
                             handleChange={this.handleChange}
                             placeholder={'Choose...'}
 
-                            className= {this.hasError("mpaa_rating") ? "is-invalid": "" }
-                            errorDiv = {this.hasError("mpaa_rating") ? "text-danger" : "d-none"}
-                            errorMessage = {"Please select MPAA rating"}
+                            className={this.hasError("mpaa_rating") ? "is-invalid" : ""}
+                            errorDiv={this.hasError("mpaa_rating") ? "text-danger" : "d-none"}
+                            errorMessage={"Please select MPAA rating"}
                         />
 
                         <Input
@@ -251,6 +295,15 @@ export default class EditMovie extends Component {
                         <hr />
 
                         <button className='btn btn-primary'>Save</button>
+                        <Link to="/admin" className="btn btn-warning ms-1">
+                            Cancel
+                        </Link>
+                        {movie.id > 0 && (
+                            <a href='#!' onClick={() => this.confirmDelete()}
+                                className='btn btn-danger ms-1'>
+                                Delete
+                            </a>
+                        )}
                     </form>
 
                 </Fragment>)
