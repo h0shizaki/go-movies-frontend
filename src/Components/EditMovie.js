@@ -66,10 +66,14 @@ export default class EditMovie extends Component {
 
         const data = new FormData(evt.target);
         const payload = Object.fromEntries(data.entries());
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", `Bearer ${this.props.jwt}`);
         console.log(payload);
 
         const requestOptions = {
             method: "POST",
+            headers: myHeaders,
             body: JSON.stringify(payload)
         }
 
@@ -109,6 +113,7 @@ export default class EditMovie extends Component {
 
 
     componentDidMount() {
+        console.log("Bearer "+this.props.jwt);
         const id = this.props.match.params.id;
         if (id > 0) {
             fetch("http://localhost:4000/v1/movie/" + id)
