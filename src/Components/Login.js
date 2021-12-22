@@ -80,7 +80,6 @@ export default class Login extends Component {
 
     };
 
-
     handleJWTChange(jwt) {
         this.props.handleJWTChange(jwt);
     }
