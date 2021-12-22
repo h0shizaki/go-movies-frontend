@@ -79,6 +79,9 @@ export default class App extends Component {
                   </Fragment>}
 
                 </ul>
+                <pre>
+                  {JSON.stringify(this.state, null , 3)}
+                </pre>
               </nav>
             </div>
             <div className="col-md-10">
@@ -99,8 +102,10 @@ export default class App extends Component {
                   <Genres />
                 </Route>
 
-                <Route path="/admin/movie/:id" component={EditMovie} />
-
+                <Route path="/admin/movie/:id" component={(props) => (
+                  <EditMovie {...props} jwt = {this.state.jwt} />
+                )} />
+ 
                 <Route path="/admin">
                   <Admin />
                 </Route>
