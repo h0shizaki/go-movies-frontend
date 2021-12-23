@@ -70,7 +70,7 @@ export default class Login extends Component {
                     message : data.error.message
                 }})
             }else{
-                console.log(data);
+                // console.log(data);
                 this.handleJWTChange(Object.values(data)[0]);
                 this.props.history.push({
                     pathname: "/admin"

@@ -11,6 +11,15 @@ export default class Admin extends Component {
     };
 
     componentDidMount() {
+
+        if(this.props.jwt === "") {
+            this.props.history.push({
+                pathname: "/login"
+            })
+            return ;
+        }
+
+
         fetch("http://localhost:4000/v1/movies")
             .then(res => {
                 if (res.status !== '200') {
