@@ -11,6 +11,7 @@ import OneGenre from "./Components/OneGenre";
 import EditMovie from "./Components/EditMovie";
 import Login from "./Components/Login" ;
 import GraphQL from "./Components/GraphQL";
+import OneMovieGraphQL from "./Components/OneMovieGrapQL";
 
 export default class App extends Component {
 
@@ -103,7 +104,7 @@ export default class App extends Component {
 
               <Switch>
                 <Route path="/movies/:id" component={OneMovie} />
-
+                <Route path="/moviesgraphql/:id" component={OneMovieGraphQL} />
                 <Route path="/movies">
                   <Movies />
                 </Route>
