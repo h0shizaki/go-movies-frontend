@@ -94,9 +94,9 @@ export default class App extends Component {
                       <Link to= "/graphql"> GraphQL </Link>
                     </li>  
                 </ul>
-                <pre>
+                {/* <pre>
                   {JSON.stringify(this.state, null , 3)}
-                </pre>
+                </pre> */}
               </nav>
             </div>
             <div className="col-md-10">
